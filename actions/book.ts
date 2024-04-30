@@ -9,10 +9,15 @@ export async function CreateBooking(range: DateRange) {
   if (!range.from || !range.to) {
     return "Select start and end date";
   }
-  const existingBookings = await db.select().from(loan).where(or(between(loan.start_date, range.from, range.to), between(loan.end_date, range.from, range.to)));
-  if (existingBookings.length > 0) {
-    return "There is already a booking blocking this booking please try another time period.";
+  try {
+    const existingBookings = await db.select().from(loan).where(or(between(loan.start_date, range.from, range.to), between(loan.end_date, range.from, range.to)));
+    if (existingBookings.length > 0) {
+      return "There is already a booking blocking this booking please try another time period.";
+    }
+  } catch (e) {
+    return "An error occured";
   }
+  
   try {
     await db.insert(loan).values({ start_date: range.from, end_date: range.to });
   } catch (e) {

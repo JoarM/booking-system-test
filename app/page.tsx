@@ -44,16 +44,20 @@ export default function Home() {
       return;
     }
     startBooking(async () => {
-      if (!range.from || !range.to) {
-        toast.error("Select start and end date");
+      if (!range.from) {
+        toast.error("Select start date");
         return;
       };
-      const error = await CreateBooking(range);
+      const bookingRange: DateRange = {
+        from: range.from,
+        to: range.to ? range.to : range.from,
+      }
+      const error = await CreateBooking(bookingRange);
       if (error) {
         toast.error(error); 
         return;
       };
-      toast.success(`Booked ${format(range.from, "PPP")} to ${format(range.to, "PPP")}`);
+      toast.success(`Booked ${format(bookingRange.from, "PPP")} to ${format(bookingRange.to, "PPP")}`);
       setLocal([...local, range]);
       setRange(undefined);
     });

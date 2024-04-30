@@ -18,12 +18,18 @@ export async function GET(req: NextRequest, {
     });
   }
 
-  const dates: DateRange[] = await db.select({
-    from: loan.start_date,
-    to: loan.end_date,
-  }).from(loan).where(or(sql`MONTH(${loan.start_date})=${month}`, sql`MONTH(${loan.end_date})=${month}`));
-
-  return Response.json(JSON.stringify(dates), {
-    status: 200,
+  try {
+    const dates: DateRange[] = await db.select({
+      from: loan.start_date,
+      to: loan.end_date,
+    }).from(loan).where(or(sql`MONTH(${loan.start_date})=${month}`, sql`MONTH(${loan.end_date})=${month}`));
+    return Response.json(JSON.stringify(dates), {
+      status: 200,
+    });
+  } catch (e) {
+    
+  }
+  return Response.json("An unexpected error occured", {
+    status: 500,
   });
 }
