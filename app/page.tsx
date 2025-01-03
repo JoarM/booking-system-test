@@ -48,7 +48,7 @@ export default function Home() {
         toast.error("Select start date");
         return;
       };
-      const bookingRange: DateRange = {
+      const bookingRange = {
         from: range.from,
         to: range.to ? range.to : range.from,
       }
